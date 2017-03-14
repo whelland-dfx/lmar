@@ -1,0 +1,23 @@
+{
+  "name": "hairhaus",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/whelland/hairhaus.git"
+  },
+  "author": "WHelland",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/whelland/hairhaus/issues"
+  },
+  "homepage": "https://github.com/whelland/hairhaus#readme",
+  "dependencies": {
+    "botbuilder": "^3.7.0",
+    "restify": "^4.3.0"
+  }
+}
