@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
   },
   "repository": {
     "type": "git",
@@ -18,6 +19,8 @@
   "homepage": "https://github.com/whelland/hairhaus#readme",
   "dependencies": {
     "botbuilder": "^3.7.0",
+    "dotenv-extended": "^1.0.4",
     "restify": "^4.3.0"
-  }
+  },
+  "devDependencies": {}
 }
