@@ -31,7 +31,7 @@ var connector = new builder.ChatConnector({
 
 
 //=========================================================
-// Bot Setuo the bot object
+// Setup the bot object
 //=========================================================
 
 var bot = new builder.UniversalBot(connector);
@@ -44,47 +44,62 @@ var intents = new builder.IntentDialog();
 
 
 //=========================================================
-// Bot path - intro and customer interest identification
+// Driver/Main
 //=========================================================
 
 var bot = new builder.UniversalBot(connector, [
     function (session) {
-        // Send a greeting and show help.
-        var card = new builder.HeroCard(session)
-            .title("Hairhaus - London Ontario")
-            .images([
-                 builder.CardImage.create(session, "http://hairhaus.ca/images/hair-haus-logo-white.jpg")
-            ]);
-        var msg = new builder.Message(session).attachments([card]);
-        session.send(msg);
-
-        builder.Prompts.choice(session, "Hello... Welcome to Hairhaus!  How can we help you today?", [
-        	 "Cut and style", 
-            "Blow out and style",
-            "Formal Style",
-            "Colour",
-            "Highligts & Lowlights",
-            "Manicure & Pedicure",
-            "Facials & Massage",
-            "Beauty",
-            "Waxing",
-            "Tint"
-        	]);
+    	session.beginDialog('/banner');
+        session.beginDialog('/rootMenu');
     },
     function (session, results) {
-        session.userData.serviceChoice = results.response.entity;
-        session.send("Got it... " + session.userData.serviceChoice + 
-                     ". Lets get an appt booked for you.");
-        session.beginDialog('/products');
+        session.endConversation("Goodbye until next time...");
     }
+
 ]);
 
 
-bot.dialog('/banner', [
+//=========================================================
+// Bot Dialogs
+//=========================================================
+
+bot.dialog('/rootMenu', [
     function (session) {
+        builder.Prompts.choice(session, "Choose an option:", 'Our Services|See our product lines|Make a Booking|Change a Booking|Check your upcomgin appointment|Quit');
+    },
+    function (session, results) {
+        switch (results.response.index) {
+            case 0:
+                session.beginDialog('/chooseServiceDialog');
+                break;
+            case 1:
+                session.beginDialog('/seeOurProductsDialog');
+                break;
+            case 2:
+                session.beginDialog('/makeABookingDialog');
+                break;
+            case 3:
+                session.beginDialog('/changeBookingDialog');
+                break;
+            case 4:
+                session.beginDialog('/checkYourBookingDialog');
+                break;
+            default:
+                session.endDialog();
+                break;
+        }
+    },
+    function (session) {
+        // Reload menu
+        session.replaceDialog('/rootMenu');
+    }
+]).reloadAction('showMenu', null, { matches: /^(menu|back|start)/i });
+
+bot.dialog('/banner', [
+    function (session, args) {
         // Send a greeting and show help.
         var card = new builder.HeroCard(session)
-            .title("Hairhaus - London Ontario")
+            .title("Hello welcome to Hairhaus - London Ontario")
             .images([
                  builder.CardImage.create(session, "http://hairhaus.ca/images/hair-haus-logo-white.jpg")
             ]);
@@ -94,7 +109,7 @@ bot.dialog('/banner', [
 ]);
 
 bot.dialog('/done', [
-    function (session) {
+    function (session, args) {
         // Send a greeting and show help.
         var card = new builder.HeroCard(session)
             .title("Hairhaus - London Ontario")
@@ -108,8 +123,8 @@ bot.dialog('/done', [
 ]);
 
 
-bot.dialog('/products', [
-	function (session) {
+bot.dialog('/seeOurProductsDialog', [
+	function (session, args) {
 
 		var cards = getCardsAttachments();
 
@@ -124,8 +139,149 @@ bot.dialog('/products', [
 ]);
 
 
+bot.dialog('/chooseServiceDialog', [
+	function (session, args) {
+
+        builder.Prompts.choice(session, "Hello... Welcome to Hairhaus!  How can we help you today?", [
+        	 "Cut and style", 
+            "Blow out and style",
+            "Formal Style",
+            "Colour",
+            "Highligts & Lowlights",
+            "Manicure & Pedicure",
+            "Facials & Massage",
+            "Beauty",
+            "Waxing",
+            "Tint"
+        	]);
+	}
+
+]);
+
+
+bot.dialog('/makeABookingDialog', [
+	function (session, args) {
+
+        builder.Prompts.choice(session, "makeABookingDialog", [
+            "This week",
+            "Next week",
+            "More times for you to choose from"
+        	]);
+	},
+    function (session, results) {
+        switch (results.response.index) {
+            case 0:
+                session.beginDialog('/bookThisWeek');
+                break;
+            case 1:
+                session.beginDialog('/bookNextWeek');
+                break;
+            case 2:
+                session.beginDialog('/bookLater');
+                break;
+            default:
+                session.endDialog();
+                break;
+        }
+    }
+
+]);
+
+bot.dialog('/checkBookingDialog', [
+	function (session, args) {
+
+        builder.Prompts.choice(session, "checkBookingDialog", [
+            "This week",
+            "Next week",
+            "More times for you to choose from"
+        	]);
+	},
+    function (session, results) {
+        switch (results.response.index) {
+            case 0:
+                session.beginDialog('/bookThisWeek');
+                break;
+            case 1:
+                session.beginDialog('/bookNextWeek');
+                break;
+            case 2:
+                session.beginDialog('/bookLater');
+                break;
+            default:
+                session.endDialog();
+                break;
+        }
+    }
+
+]);
+
+bot.dialog('/checkYourBookingDialog', [
+	function (session, args) {
+
+        builder.Prompts.choice(session, "checkYourBookingDialog", [
+            "This week",
+            "Next week",
+            "More times for you to choose from"
+        	]);
+	},
+    function (session, results) {
+        switch (results.response.index) {
+            case 0:
+                session.beginDialog('/bookThisWeek');
+                break;
+            case 1:
+                session.beginDialog('/bookNextWeek');
+                break;
+            case 2:
+                session.beginDialog('/bookLater');
+                break;
+            default:
+                session.endDialog();
+                break;
+        }
+    }
+
+]);
+
+
+//bookThisWeek')
+//('/bookNextWeek');
+//'/bookLater');
+
+
+bot.dialog('rollDiceDialog', [
+    function (session, args) {
+        builder.Prompts.number(session, "How many dice should I roll?");
+    },
+    function (session, results) {
+        if (results.response > 0) {
+            var msg = "I rolled:";
+            for (var i = 0; i < results.response; i++) {
+                var roll = Math.floor(Math.random() * 6) + 1;
+                msg += ' ' + roll.toString(); 
+            }
+            session.endDialog(msg);
+        } else {
+            session.endDialog("Ummm... Ok... I rolled air.");
+        }
+    }
+]);
+
+// Magic 8-Ball
+bot.dialog('magicBallDialog', [
+    function (session, args) {
+        builder.Prompts.text(session, "What is your question?");
+    },
+    function (session, results) {
+        // Use the SDK's built-in ability to pick a response at random.
+        session.endDialog(magicAnswers);
+    }
+]);
+
+
+
 //=========================================================
-// Functions
+// Functions and Vars
 //=========================================================
 
 function getCardsAttachments(session) {
@@ -178,6 +334,32 @@ function getCardsAttachments(session) {
 
     ];
 }
+
+
+
+var magicAnswers = [
+    "It is certain",
+    "It is decidedly so",
+    "Without a doubt",
+    "Yes, definitely",
+    "You may rely on it",
+    "As I see it, yes",
+    "Most likely",
+    "Outlook good",
+    "Yes",
+    "Signs point to yes",
+    "Reply hazy try again",
+    "Ask again later",
+    "Better not tell you now",
+    "Cannot predict now",
+    "Concentrate and ask again",
+    "Don't count on it",
+    "My reply is no",
+    "My sources say no",
+    "Outlook not so good",
+    "Very doubtful"
+];
+
 
 //=========================================================
 // Wiring
