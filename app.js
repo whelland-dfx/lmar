@@ -58,14 +58,13 @@ var bot = new builder.UniversalBot(connector, [
 
 ]);
 
-
 //=========================================================
 // Bot Dialogs
 //=========================================================
 
 bot.dialog('/rootMenu', [
     function (session) {
-        builder.Prompts.choice(session, "Choose an option:", 'Our Services|See our product lines|Make a Booking|Change a Booking|Check your upcomgin appointment|Quit');
+        builder.Prompts.choice(session, "Choose an option:", 'Our Services|See our product lines|Learn about Microblading|Make a Booking|Change a Booking|Check your upcomgin appointment|Quit');
     },
     function (session, results) {
         switch (results.response.index) {
@@ -76,12 +75,15 @@ bot.dialog('/rootMenu', [
                 session.beginDialog('/seeOurProductsDialog');
                 break;
             case 2:
-                session.beginDialog('/makeABookingDialog');
+                session.beginDialog('/learnAboutMicroblading');
                 break;
             case 3:
-                session.beginDialog('/changeBookingDialog');
+                session.beginDialog('/makeABookingDialog');
                 break;
             case 4:
+                session.beginDialog('/changeBookingDialog');
+                break;
+            case 5:
                 session.beginDialog('/checkYourBookingDialog');
                 break;
             default:
@@ -124,6 +126,22 @@ bot.dialog('/done', [
 
 
 bot.dialog('/seeOurProductsDialog', [
+	function (session, args) {
+
+		var cards = getCardsAttachments();
+
+    // create reply with Carousel AttachmentLayout
+    var reply = new builder.Message(session)
+        .attachmentLayout(builder.AttachmentLayout.carousel)
+        .attachments(cards);
+
+    session.send(reply);
+	}
+
+]);
+
+
+bot.dialog('/learnAboutMicroblading', [
 	function (session, args) {
 
 		var cards = getCardsAttachments();
@@ -244,37 +262,16 @@ bot.dialog('/checkYourBookingDialog', [
 ]);
 
 
-//bookThisWeek')
 //('/bookNextWeek');
-//'/bookLater');
 
 
-bot.dialog('rollDiceDialog', [
+// Incentive
+bot.dialog('couponDialog', [
     function (session, args) {
-        builder.Prompts.number(session, "How many dice should I roll?");
+        builder.Prompts.text(session, "Use this link for a deal on your next visit?");
     },
     function (session, results) {
-        if (results.response > 0) {
-            var msg = "I rolled:";
-            for (var i = 0; i < results.response; i++) {
-                var roll = Math.floor(Math.random() * 6) + 1;
-                msg += ' ' + roll.toString(); 
-            }
-            session.endDialog(msg);
-        } else {
-            session.endDialog("Ummm... Ok... I rolled air.");
-        }
-    }
-]);
-
-// Magic 8-Ball
-bot.dialog('magicBallDialog', [
-    function (session, args) {
-        builder.Prompts.text(session, "What is your question?");
-    },
-    function (session, results) {
-        // Use the SDK's built-in ability to pick a response at random.
-        session.endDialog(magicAnswers);
+        session.endDialog(offersList);
     }
 ]);
 
@@ -337,7 +334,7 @@ function getCardsAttachments(session) {
 
 
 
-var magicAnswers = [
+var offersList = [
     "It is certain",
     "It is decidedly so",
     "Without a doubt",
