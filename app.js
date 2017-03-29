@@ -9,17 +9,16 @@ require('dotenv-extended').load();
 var restify = require('restify');
 var builder = require('botbuilder');
 
-
 //=========================================================
 // Setup Restify Server
 //=========================================================
 
 var server = restify.createServer();
-server.listen(process.env.port || process.env.PORT || 3978, function () {
+server.listen(process.env.port || process.env.PORT || 3978, 
+	function () {
    console.log('%s listening to %s', server.name, server.url); 
 });
   
-
 //=========================================================
 // Create Chat Connector
 //=========================================================
@@ -28,7 +27,6 @@ var connector = new builder.ChatConnector({
     appId: process.env.MICROSOFT_APP_ID,
     appPassword: process.env.MICROSOFT_APP_PASSWORD
 });
-
 
 //=========================================================
 // Setup the bot object
@@ -41,7 +39,6 @@ var bot = new builder.UniversalBot(connector);
 //=========================================================
 
 var intents = new builder.IntentDialog();
-
 
 //=========================================================
 // Driver/Main
@@ -62,43 +59,9 @@ var bot = new builder.UniversalBot(connector, [
 // Bot Dialogs
 //=========================================================
 
-bot.dialog('/rootMenu', [
-    function (session) {
-        builder.Prompts.choice(session, "Choose an option:", 'Our Services|See our product lines|Learn about Microblading|Make a Booking|Change a Booking|Check your upcomgin appointment|Quit');
-    },
-    function (session, results) {
-        switch (results.response.index) {
-            case 0:
-                session.beginDialog('/chooseServiceDialog');
-                break;
-            case 1:
-                session.beginDialog('/seeOurProductsDialog');
-                break;
-            case 2:
-                session.beginDialog('/learnAboutMicroblading');
-                break;
-            case 3:
-                session.beginDialog('/makeABookingDialog');
-                break;
-            case 4:
-                session.beginDialog('/changeBookingDialog');
-                break;
-            case 5:
-                session.beginDialog('/checkYourBookingDialog');
-                break;
-            default:
-                session.endDialog();
-                break;
-        }
-    },
-    function (session) {
-        // Reload menu
-        session.replaceDialog('/rootMenu');
-    }
-]).reloadAction('showMenu', null, { matches: /^(menu|back|start)/i });
-
+// Banner =================================================
 bot.dialog('/banner', [
-    function (session, args) {
+    function (session) {
         // Send a greeting and show help.
         var card = new builder.HeroCard(session)
             .title("Hello welcome to Hairhaus - London Ontario")
@@ -110,21 +73,224 @@ bot.dialog('/banner', [
     }
 ]);
 
-bot.dialog('/done', [
-    function (session, args) {
-        // Send a greeting and show help.
-        var card = new builder.HeroCard(session)
-            .title("Hairhaus - London Ontario")
-            .images([
-                 builder.CardImage.create(session, "http://hairhaus.ca/images/hair-haus-logo-white.jpg")
-            ]);
-        var msg = new builder.Message(session).attachments([card]);
-        session.send(msg);
-        session.beginDialog('/products');
+// Root Main Menu =========================================
+bot.dialog('/rootMenu', [
+    function (session) {
+        builder.Prompts.choice(session, "Choose an option:", 'Our Services|See our product lines|Learn about Microblading|Make a Booking|Change a Booking|Check your upcomgin appointment|Quit');
+    },
+    function (session, results) {
+        switch (results.response.index) {
+            case 0:
+                session.beginDialog('/rootMenu/chooseServiceDialog');
+                break;
+            case 1:
+                session.beginDialog('/rootMenu/seeOurProductsDialog');
+                break;
+            case 2:
+                session.beginDialog('/rootMenu/learnAboutMicroblading');
+                break;
+            case 3:
+                session.beginDialog('/rootMenu/makeABookingDialog');
+                break;
+            case 4:
+                session.beginDialog('/rootMenu/changeBookingDialog');
+                break;
+            case 5:
+                session.beginDialog('/rootMenu/checkYourBookingDialog');
+                break;
+            default:
+                session.endDialog();
+                break;
+        }
+    },
+    function (session) {
+        // Reload menu
+        session.replaceDialog('/rootMenu');
+    }
+]).reloadAction('rootMenu', null, { matches: /^(menu|back|start)/i });
+
+// Choose Service Dialog ===================================
+bot.dialog('/rootMenu/chooseServiceDialog', [
+	function (session, args) {
+
+        builder.Prompts.choice(session, "Hello... Welcome to Hairhaus!  How can we help you today?", [
+        	"Cut and style", 
+            "Blow out and style",
+            "Formal Style",
+            "Colour",
+            "Highligts & Lowlights",
+            "Manicure & Pedicure",
+            "Facials & Massage",
+            "Beauty",
+            "Waxing",
+            "Tint"
+        	]);
+	},
+
+    function (session, results) {
+        switch (results.response.index) {
+            case 0:
+                session.beginDialog('/rootMenu/chooseServiceDialog/cutAndStyleDialog');
+                break;
+            case 1:
+                session.beginDialog('/rootMenu/chooseServiceDialog/blowOutAndStyleDialog');
+                break;
+            case 2:
+                session.beginDialog('/rootMenu/chooseServiceDialog/formalStyleDialog');
+                break;
+            case 3:
+                session.beginDialog('/rootMenu/chooseServiceDialog/colourDialog');
+                break;
+            case 4:
+                session.beginDialog('/rootMenu/chooseServiceDialog/highlightsDialog');
+                break;
+            case 5:
+                session.beginDialog('/rootMenu/chooseServiceDialog/manicurePedicureDialog');
+                break;
+            case 6:
+                session.beginDialog('/rootMenu/chooseServiceDialog/facialsAndMassageDialog');
+                break;
+            case 7:
+                session.beginDialog('/rootMenu/chooseServiceDialog/beautyDialog');
+                break;
+            case 8:
+                session.beginDialog('/rootMenu/chooseServiceDialog/waxingDialog');
+                break;
+            case 9:
+                session.beginDialog('/rootMenu/chooseServiceDialog/tintDialog');
+                break;
+            default:
+                session.endDialog();
+                break;
+        }
+    },
+    function (session) {
+        // Reload menu
+        session.replaceDialog('/rootMenu');
+    }
+]).reloadAction('rootMenu', null, { matches: /^(menu|back|start)/i });
+
+// /rootMenu/chooseServiceDialog/cutAndStyleDialog ===========
+bot.dialog('/rootMenu/chooseServiceDialog/cutAndStyleDialog', [ 
+	function (session) {
+        builder.Prompts.text(session, "Hello from... /rootMenu/chooseServiceDialog/cutAndStyleDialog");
+    //},
+    //function (session) {
+        // Reload menu
+        session.replaceDialog('/rootMenu');
+    }
+]);
+
+// rootMenu/chooseServiceDialog/blowOutAndStyleDialog ===========
+bot.dialog('/rootMenu/chooseServiceDialog/blowOutAndStyleDialog', [ 
+	function (session) {
+        builder.Prompts.text(session, "Hello from... /rootMenu/chooseServiceDialog/blowOutAndStyleDialog");
+    },
+    function (session) {
+        // Reload menu
+        session.replaceDialog('/rootMenu');
+    }
+]);
+
+// rootMenu/chooseServiceDialog/formalStyleDialog ===========
+bot.dialog('/rootMenu/chooseServiceDialog/formalStyleDialog', [ 
+	function (session) {
+        builder.Prompts.text(session, "Hello from... /rootMenu/chooseServiceDialog/formalStyleDialog");
+    },
+    function (session) {
+        // Reload menu
+        session.replaceDialog('/rootMenu');
+    }
+]);
+
+// rootMenu/chooseServiceDialog/colourDialog ===========
+bot.dialog('/rootMenu/chooseServiceDialog/colourDialog', [ 
+	function (session) {
+        builder.Prompts.text(session, "Hello from... /rootMenu/chooseServiceDialog/colourDialog");
+    },
+    function (session) {
+        // Reload menu
+        session.replaceDialog('/rootMenu');
+    }
+]);
+
+// rootMenu/chooseServiceDialog/highlightsDialog ===========
+bot.dialog('/rootMenu/chooseServiceDialog/highlightsDialog', [ 
+	function (session) {
+        builder.Prompts.text(session, "Hello from... /rootMenu/chooseServiceDialog/highlightsDialog");
+    },
+    function (session) {
+        // Reload menu
+        session.replaceDialog('/rootMenu');
+    }
+]);
+
+// rootMenu/chooseServiceDialog/manicurePedicureDialog ===========
+bot.dialog('/rootMenu/chooseServiceDialog/manicurePedicureDialog', [ 
+	function (session) {
+        builder.Prompts.text(session, "Hello from... /rootMenu/chooseServiceDialog/manicurePedicureDialog");
+    },
+    function (session) {
+        // Reload menu
+        session.replaceDialog('/rootMenu');
+    }
+]);
+
+// rootMenu/chooseServiceDialog/facialsAndMassageDialog ===========
+bot.dialog('/rootMenu/chooseServiceDialog/facialsAndMassageDialog', [ 
+	function (session) {
+        builder.Prompts.text(session, "Hello from... /rootMenu/chooseServiceDialog/facialsAndMassageDialog");
+    },
+    function (session) {
+        // Reload menu
+        session.replaceDialog('/rootMenu');
+    }
+]);
+
+// rootMenu/chooseServiceDialog/beautyDialog ===========
+bot.dialog('/rootMenu/chooseServiceDialog/beautyDialog', [ 
+	function (session) {
+        builder.Prompts.text(session, "Hello from... /rootMenu/chooseServiceDialog/beautyDialog");
+    },
+    function (session) {
+        // Reload menu
+        session.replaceDialog('/rootMenu');
     }
 ]);
 
 
+// rootMenu/chooseServiceDialog/waxingDialog ===========
+bot.dialog('/rootMenu/chooseServiceDialog/waxingDialog', [ 
+	function (session) {
+        builder.Prompts.text(session, "Hello from... /rootMenu/chooseServiceDialog/waxingDialog");
+    },
+    function (session) {
+        // Reload menu
+        session.replaceDialog('/rootMenu');
+    }
+]);
+
+// rootMenu/chooseServiceDialog/tintDialog ===========
+bot.dialog('/rootMenu/chooseServiceDialog/tintDialog', [ 
+	function (session) {
+        builder.Prompts.text(session, "Hello from... /rootMenu/chooseServiceDialog/tintDialog");
+    },
+    function (session) {
+        // Reload menu
+        session.replaceDialog('/rootMenu');
+    }
+]);
+
+
+
+
+
+
+
+
+
+
+// See Products Dialog =======================================
 bot.dialog('/seeOurProductsDialog', [
 	function (session, args) {
 
@@ -140,7 +306,7 @@ bot.dialog('/seeOurProductsDialog', [
 
 ]);
 
-
+// Lean about microblading ===================================
 bot.dialog('/learnAboutMicroblading', [
 	function (session, args) {
 
@@ -156,31 +322,11 @@ bot.dialog('/learnAboutMicroblading', [
 
 ]);
 
-
-bot.dialog('/chooseServiceDialog', [
-	function (session, args) {
-
-        builder.Prompts.choice(session, "Hello... Welcome to Hairhaus!  How can we help you today?", [
-        	 "Cut and style", 
-            "Blow out and style",
-            "Formal Style",
-            "Colour",
-            "Highligts & Lowlights",
-            "Manicure & Pedicure",
-            "Facials & Massage",
-            "Beauty",
-            "Waxing",
-            "Tint"
-        	]);
-	}
-
-]);
-
-
+// Make a Booking ============================================
 bot.dialog('/makeABookingDialog', [
 	function (session, args) {
 
-        builder.Prompts.choice(session, "makeABookingDialog", [
+        builder.Prompts.choice(session, "Select a time for your visit", [
             "This week",
             "Next week",
             "More times for you to choose from"
@@ -189,13 +335,13 @@ bot.dialog('/makeABookingDialog', [
     function (session, results) {
         switch (results.response.index) {
             case 0:
-                session.beginDialog('/bookThisWeek');
+                session.beginDialog('/booking/bookThisWeek');
                 break;
             case 1:
-                session.beginDialog('/bookNextWeek');
+                session.beginDialog('/booking/bookNextWeek');
                 break;
             case 2:
-                session.beginDialog('/bookLater');
+                session.beginDialog('/booking/bookLater');
                 break;
             default:
                 session.endDialog();
@@ -205,6 +351,7 @@ bot.dialog('/makeABookingDialog', [
 
 ]);
 
+// Check Booking Dialog =====================================
 bot.dialog('/checkBookingDialog', [
 	function (session, args) {
 
@@ -275,7 +422,19 @@ bot.dialog('couponDialog', [
     }
 ]);
 
-
+//Done - say goodbye
+bot.dialog('/done', [
+    function (session, args) {
+        // Send a greeting and show help.
+        var card = new builder.HeroCard(session)
+            .title("Hairhaus - London Ontario")
+            .images([
+                 builder.CardImage.create(session, "http://hairhaus.ca/images/hair-haus-logo-white.jpg")
+            ]);
+        var msg = new builder.Message(session).attachments([card]);
+        session.send(msg);
+    }
+]);
 
 //=========================================================
 // Functions and Vars
