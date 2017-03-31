@@ -6,8 +6,20 @@
 
 require('dotenv-extended').load();
 
+var mongoose = require('mongoose');
 var restify = require('restify');
 var builder = require('botbuilder');
+
+//=========================================================
+// Setup our Mongoose connection
+//=========================================================
+mongoose.connect('mongodb://localhost/db_hairhaus');
+
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+  // we're connected!
+});
 
 //=========================================================
 // Setup Restify Server
@@ -174,8 +186,8 @@ bot.dialog('/rootMenu/chooseServiceDialog', [
 bot.dialog('/rootMenu/chooseServiceDialog/cutAndStyleDialog', [ 
 	function (session) {
         builder.Prompts.text(session, "Hello from... /rootMenu/chooseServiceDialog/cutAndStyleDialog");
-    //},
-    //function (session) {
+    },
+    function (session) {
         // Reload menu
         session.replaceDialog('/rootMenu');
     }
