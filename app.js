@@ -1,25 +1,25 @@
 
-
 //=========================================================
 // Setup All dependancies
 //=========================================================
 
 require('dotenv-extended').load();
 
-var mongoose = require('mongoose');
 var restify = require('restify');
 var builder = require('botbuilder');
+var mongoose = require('mongoose');
 
 //=========================================================
 // Setup our Mongoose connection
 //=========================================================
-mongoose.connect('mongodb://localhost/db_hairhaus');
+/*mongoose.connect('mongodb://localhost/db_hairhaus');
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
   // we're connected!
 });
+*/
 
 //=========================================================
 // Setup Restify Server
@@ -53,7 +53,7 @@ var bot = new builder.UniversalBot(connector);
 var intents = new builder.IntentDialog();
 
 //=========================================================
-// Driver/Main
+// Driver/Main - Kick this thing off!
 //=========================================================
 
 var bot = new builder.UniversalBot(connector, [
@@ -270,7 +270,6 @@ bot.dialog('/rootMenu/chooseServiceDialog/beautyDialog', [
     }
 ]);
 
-
 // rootMenu/chooseServiceDialog/waxingDialog ===========
 bot.dialog('/rootMenu/chooseServiceDialog/waxingDialog', [ 
 	function (session) {
@@ -292,15 +291,6 @@ bot.dialog('/rootMenu/chooseServiceDialog/tintDialog', [
         session.replaceDialog('/rootMenu');
     }
 ]);
-
-
-
-
-
-
-
-
-
 
 // See Products Dialog =======================================
 bot.dialog('/seeOurProductsDialog', [
@@ -363,34 +353,20 @@ bot.dialog('/makeABookingDialog', [
 
 ]);
 
-// Check Booking Dialog =====================================
-bot.dialog('/checkBookingDialog', [
-	function (session, args) {
-
-        builder.Prompts.choice(session, "checkBookingDialog", [
-            "This week",
-            "Next week",
-            "More times for you to choose from"
-        	]);
-	},
-    function (session, results) {
-        switch (results.response.index) {
-            case 0:
-                session.beginDialog('/bookThisWeek');
-                break;
-            case 1:
-                session.beginDialog('/bookNextWeek');
-                break;
-            case 2:
-                session.beginDialog('/bookLater');
-                break;
-            default:
-                session.endDialog();
-                break;
-        }
+// Checkout/Confirm Booking Dialog =====================================
+bot.dialog('checkoutDialog', function (session) {
+    var msg;
+    var cart = session.userData.cart;
+    if (cart.length > 0) {
+        msg = "Your appointment at the spa has been confirmed.";
+    } else {
+        msg = "No appoint made this conversation.";
     }
+    delete session.userData.cart;
+    session.endConversation(msg);
+});
 
-]);
+
 
 bot.dialog('/checkYourBookingDialog', [
 	function (session, args) {
@@ -420,8 +396,35 @@ bot.dialog('/checkYourBookingDialog', [
 
 ]);
 
+// Booking Dialog =====================================
+bot.dialog('bookingDialog', [
+    function (session, args) {
+        if (!args.continueOrder) {
+            session.userData.cart = [];
+            session.send("At anytime you can say 'cancel appointment', 'view appointment', or 'make appointment'.")
+        }
+        builder.Prompts.choice(session, "What would you like to do?", "Pizza|Drinks|Extras");
+    },
+    function (session, results) {
+        session.beginDialog('add' + results.response.entity);
+    },
+    function (session, results) {
+        if (results.response) {
+            session.userData.cart.push(results.response);
+        }
+        session.replaceDialog('orderPizzaDialog', { continueOrder: true });
+    }
+]).triggerAction({ 
+        matches: /order.*pizza/i,
+        confirmPrompt: "This will cancel the current order. Are you sure?"
+  })
+  .cancelAction('cancelOrderAction', "Order canceled.", { 
+      matches: /(cancel.*order|^cancel)/i,
+      confirmPrompt: "Are you sure?"
+  })
+  .beginDialogAction('viewCartAction', 'viewCartDialog', { matches: /view.*cart/i })
+  .beginDialogAction('checkoutAction', 'checkoutDialog', { matches: /checkout/i });
 
-//('/bookNextWeek');
 
 
 // Incentive
@@ -504,30 +507,10 @@ function getCardsAttachments(session) {
 }
 
 
-
 var offersList = [
-    "It is certain",
-    "It is decidedly so",
-    "Without a doubt",
-    "Yes, definitely",
-    "You may rely on it",
-    "As I see it, yes",
-    "Most likely",
-    "Outlook good",
-    "Yes",
-    "Signs point to yes",
-    "Reply hazy try again",
-    "Ask again later",
-    "Better not tell you now",
-    "Cannot predict now",
-    "Concentrate and ask again",
-    "Don't count on it",
-    "My reply is no",
-    "My sources say no",
-    "Outlook not so good",
-    "Very doubtful"
+    "5% off your appointment",
+    "10% off product purchased at your appointment"
 ];
-
 
 //=========================================================
 // Wiring
