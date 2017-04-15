@@ -7,19 +7,32 @@ require('dotenv-extended').load();
 
 var restify = require('restify');
 var builder = require('botbuilder');
+//var meaningOfLife = require('./meaningOfLife');
+
+var dbMongoose = require('./dbHelper');
+
+
 var mongoose = require('mongoose');
 
 //=========================================================
 // Setup our Mongoose connection
 //=========================================================
-/*mongoose.connect('mongodb://localhost/db_hairhaus');
+mongoose.connect('mongodb://localhost/db_hairhaus');
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
   // we're connected!
 });
-*/
+
+
+MongoClient.connect(url, function(err, db) {
+  assert.equal(null, err);
+  insertDocument(db, function() {
+      db.close();
+  });
+});
+
 
 //=========================================================
 // Setup Restify Server
@@ -88,7 +101,7 @@ bot.dialog('/banner', [
 // Root Main Menu =========================================
 bot.dialog('/rootMenu', [
     function (session) {
-        builder.Prompts.choice(session, "Choose an option:", 'Our Services|See our product lines|Learn about Microblading|Make a Booking|Change a Booking|Check your upcomgin appointment|Quit');
+        builder.Prompts.choice(session, "How can we help you today?:", 'Our Services|See our product lines|Learn about Microblading|Make a Booking|Change a Booking|Check your upcomgin appointment|Quit');
     },
     function (session, results) {
         switch (results.response.index) {
@@ -139,7 +152,7 @@ bot.dialog('/rootMenu/chooseServiceDialog', [
         	]);
 	},
 
-    function (session, results) {
+    function (session, results, args) {
         switch (results.response.index) {
             case 0:
                 session.beginDialog('/rootMenu/chooseServiceDialog/cutAndStyleDialog');
@@ -325,33 +338,36 @@ bot.dialog('/learnAboutMicroblading', [
 ]);
 
 // Make a Booking ============================================
-bot.dialog('/makeABookingDialog', [
-	function (session, args) {
-
-        builder.Prompts.choice(session, "Select a time for your visit", [
-            "This week",
-            "Next week",
-            "More times for you to choose from"
-        	]);
-	},
-    function (session, results) {
-        switch (results.response.index) {
-            case 0:
-                session.beginDialog('/booking/bookThisWeek');
-                break;
-            case 1:
-                session.beginDialog('/booking/bookNextWeek');
-                break;
-            case 2:
-                session.beginDialog('/booking/bookLater');
-                break;
-            default:
-                session.endDialog();
-                break;
+bot.dialog('/rootMenu/makeABookingDialog', [
+    function (session, args) {
+        if (!args.continueOrder) {
+            session.userData.cart = [];
+            session.send("At anytime you can say 'cancel order', 'view cart', or 'checkout'.")
         }
+        builder.Prompts.choice(session, "What would you like to add?", "Pizza|Drinks|Extras");
+    },
+    function (session, results) {
+        session.beginDialog('add' + results.response.entity);
+    },
+    function (session, results) {
+        if (results.response) {
+            session.userData.cart.push(results.response);
+        }
+        session.replaceDialog('orderPizzaDialog', { continueOrder: true });
     }
+]).triggerAction({ 
+        matches: /order.*pizza/i,
+        confirmPrompt: "This will cancel the current order. Are you sure?"
+  })
+  .cancelAction('cancelOrderAction', "Order canceled.", { 
+      matches: /(cancel.*order|^cancel)/i,
+      confirmPrompt: "Are you sure?"
+  })
+  .beginDialogAction('viewCartAction', 'viewCartDialog', { matches: /view.*cart/i })
+  .beginDialogAction('checkoutAction', 'checkoutDialog', { matches: /checkout/i });
 
-]);
+
+
 
 // Checkout/Confirm Booking Dialog =====================================
 bot.dialog('checkoutDialog', function (session) {
