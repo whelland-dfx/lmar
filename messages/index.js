@@ -16,7 +16,7 @@ var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure
     openIdMetadata: process.env['BotOpenIdMetadata']
 });
 
-var bot = new builder.UniversalBot(connector);
+//var bot = new builder.UniversalBot(connector);
 
 //var restify = require('restify');
 //var builder = require('botbuilder');
@@ -51,26 +51,26 @@ var bot = new builder.UniversalBot(connector);
 // Setup Restify Server
 //=========================================================
 
-var server = restify.createServer();
-server.listen(process.env.port || process.env.PORT || 3978, 
-	function () {
-   console.log('%s listening to %s', server.name, server.url); 
-});
+//var server = restify.createServer();
+//server.listen(process.env.port || process.env.PORT || 3978, 
+//  function () {
+//   console.log('%s listening to %s', server.name, server.url); 
+//});
   
 //=========================================================
 // Create Chat Connector
 //=========================================================
 
-var connector = new builder.ChatConnector({
-    appId: process.env.MICROSOFT_APP_ID,
-    appPassword: process.env.MICROSOFT_APP_PASSWORD
-});
+//var connector = new builder.ChatConnector({
+//    appId: process.env.MICROSOFT_APP_ID,
+//    appPassword: process.env.MICROSOFT_APP_PASSWORD
+//});
 
 //=========================================================
 // Setup the bot object
 //=========================================================
 
-var bot = new builder.UniversalBot(connector);
+//var bot = new builder.UniversalBot(connector);
 
 //=========================================================
 // Bot Set the intent object
@@ -84,7 +84,7 @@ var intents = new builder.IntentDialog();
 
 var bot = new builder.UniversalBot(connector, [
     function (session) {
-    	session.beginDialog('/banner');
+        session.beginDialog('/banner');
         session.beginDialog('/rootMenu');
     },
     function (session, results) {
@@ -149,10 +149,10 @@ bot.dialog('/rootMenu', [
 
 // Choose Service Dialog ===================================
 bot.dialog('/rootMenu/chooseServiceDialog', [
-	function (session, args) {
+    function (session, args) {
 
         builder.Prompts.choice(session, "Hello... Welcome to Hairhaus!  How can we help you today?", [
-        	"Cut and style", 
+            "Cut and style", 
             "Blow out and style",
             "Formal Style",
             "Colour",
@@ -162,8 +162,8 @@ bot.dialog('/rootMenu/chooseServiceDialog', [
             "Beauty",
             "Waxing",
             "Tint"
-        	]);
-	},
+            ]);
+    },
 
     function (session, results, args) {
         switch (results.response.index) {
@@ -210,7 +210,7 @@ bot.dialog('/rootMenu/chooseServiceDialog', [
 
 // /rootMenu/chooseServiceDialog/cutAndStyleDialog ===========
 bot.dialog('/rootMenu/chooseServiceDialog/cutAndStyleDialog', [ 
-	function (session) {
+    function (session) {
         builder.Prompts.text(session, "Hello from... /rootMenu/chooseServiceDialog/cutAndStyleDialog");
     },
     function (session) {
@@ -221,7 +221,7 @@ bot.dialog('/rootMenu/chooseServiceDialog/cutAndStyleDialog', [
 
 // rootMenu/chooseServiceDialog/blowOutAndStyleDialog ===========
 bot.dialog('/rootMenu/chooseServiceDialog/blowOutAndStyleDialog', [ 
-	function (session) {
+    function (session) {
         builder.Prompts.text(session, "Hello from... /rootMenu/chooseServiceDialog/blowOutAndStyleDialog");
     },
     function (session) {
@@ -232,7 +232,7 @@ bot.dialog('/rootMenu/chooseServiceDialog/blowOutAndStyleDialog', [
 
 // rootMenu/chooseServiceDialog/formalStyleDialog ===========
 bot.dialog('/rootMenu/chooseServiceDialog/formalStyleDialog', [ 
-	function (session) {
+    function (session) {
         builder.Prompts.text(session, "Hello from... /rootMenu/chooseServiceDialog/formalStyleDialog");
     },
     function (session) {
@@ -243,7 +243,7 @@ bot.dialog('/rootMenu/chooseServiceDialog/formalStyleDialog', [
 
 // rootMenu/chooseServiceDialog/colourDialog ===========
 bot.dialog('/rootMenu/chooseServiceDialog/colourDialog', [ 
-	function (session) {
+    function (session) {
         builder.Prompts.text(session, "Hello from... /rootMenu/chooseServiceDialog/colourDialog");
     },
     function (session) {
@@ -254,7 +254,7 @@ bot.dialog('/rootMenu/chooseServiceDialog/colourDialog', [
 
 // rootMenu/chooseServiceDialog/highlightsDialog ===========
 bot.dialog('/rootMenu/chooseServiceDialog/highlightsDialog', [ 
-	function (session) {
+    function (session) {
         builder.Prompts.text(session, "Hello from... /rootMenu/chooseServiceDialog/highlightsDialog");
     },
     function (session) {
@@ -265,7 +265,7 @@ bot.dialog('/rootMenu/chooseServiceDialog/highlightsDialog', [
 
 // rootMenu/chooseServiceDialog/manicurePedicureDialog ===========
 bot.dialog('/rootMenu/chooseServiceDialog/manicurePedicureDialog', [ 
-	function (session) {
+    function (session) {
         builder.Prompts.text(session, "Hello from... /rootMenu/chooseServiceDialog/manicurePedicureDialog");
     },
     function (session) {
@@ -276,7 +276,7 @@ bot.dialog('/rootMenu/chooseServiceDialog/manicurePedicureDialog', [
 
 // rootMenu/chooseServiceDialog/facialsAndMassageDialog ===========
 bot.dialog('/rootMenu/chooseServiceDialog/facialsAndMassageDialog', [ 
-	function (session) {
+    function (session) {
         builder.Prompts.text(session, "Hello from... /rootMenu/chooseServiceDialog/facialsAndMassageDialog");
     },
     function (session) {
@@ -287,7 +287,7 @@ bot.dialog('/rootMenu/chooseServiceDialog/facialsAndMassageDialog', [
 
 // rootMenu/chooseServiceDialog/beautyDialog ===========
 bot.dialog('/rootMenu/chooseServiceDialog/beautyDialog', [ 
-	function (session) {
+    function (session) {
         builder.Prompts.text(session, "Hello from... /rootMenu/chooseServiceDialog/beautyDialog");
     },
     function (session) {
@@ -298,7 +298,7 @@ bot.dialog('/rootMenu/chooseServiceDialog/beautyDialog', [
 
 // rootMenu/chooseServiceDialog/waxingDialog ===========
 bot.dialog('/rootMenu/chooseServiceDialog/waxingDialog', [ 
-	function (session) {
+    function (session) {
         builder.Prompts.text(session, "Hello from... /rootMenu/chooseServiceDialog/waxingDialog");
     },
     function (session) {
@@ -309,7 +309,7 @@ bot.dialog('/rootMenu/chooseServiceDialog/waxingDialog', [
 
 // rootMenu/chooseServiceDialog/tintDialog ===========
 bot.dialog('/rootMenu/chooseServiceDialog/tintDialog', [ 
-	function (session) {
+    function (session) {
         builder.Prompts.text(session, "Hello from... /rootMenu/chooseServiceDialog/tintDialog");
     },
     function (session) {
@@ -320,9 +320,9 @@ bot.dialog('/rootMenu/chooseServiceDialog/tintDialog', [
 
 // See Products Dialog =======================================
 bot.dialog('/seeOurProductsDialog', [
-	function (session, args) {
+    function (session, args) {
 
-		var cards = getCardsAttachments();
+        var cards = getCardsAttachments();
 
     // create reply with Carousel AttachmentLayout
     var reply = new builder.Message(session)
@@ -330,15 +330,15 @@ bot.dialog('/seeOurProductsDialog', [
         .attachments(cards);
 
     session.send(reply);
-	}
+    }
 
 ]);
 
 // Lean about microblading ===================================
 bot.dialog('/learnAboutMicroblading', [
-	function (session, args) {
+    function (session, args) {
 
-		var cards = getCardsAttachments();
+        var cards = getCardsAttachments();
 
     // create reply with Carousel AttachmentLayout
     var reply = new builder.Message(session)
@@ -346,7 +346,7 @@ bot.dialog('/learnAboutMicroblading', [
         .attachments(cards);
 
     session.send(reply);
-	}
+    }
 
 ]);
 
@@ -398,14 +398,14 @@ bot.dialog('checkoutDialog', function (session) {
 
 
 bot.dialog('/checkYourBookingDialog', [
-	function (session, args) {
+    function (session, args) {
 
         builder.Prompts.choice(session, "checkYourBookingDialog", [
             "This week",
             "Next week",
             "More times for you to choose from"
-        	]);
-	},
+            ]);
+    },
     function (session, results) {
         switch (results.response.index) {
             case 0:
