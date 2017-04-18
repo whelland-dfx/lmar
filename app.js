@@ -5,25 +5,25 @@
 
 require('dotenv-extended').load();
 
-var restify = require('restify');
+//var restify = require('restify');
 var builder = require('botbuilder');
 //var meaningOfLife = require('./meaningOfLife');
 
-var dbMongoose = require('./includes/dbHelper');
+//var dbMongoose = require('./includes/dbHelper');
 
 
-var mongoose = require('mongoose');
+//var mongoose = require('mongoose');
 
 //=========================================================
 // Setup our Mongoose connection
 //=========================================================
-mongoose.connect('mongodb://localhost/db_hairhaus');
+//mongoose.connect('mongodb://localhost/db_hairhaus');
 
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function() {
+//var db = mongoose.connection;
+//db.on('error', console.error.bind(console, 'connection error:'));
+//db.once('open', function() {
   // we're connected!
-});
+//});
 
 
 //MongoClient.connect(url, function(err, db) {
@@ -532,4 +532,4 @@ var offersList = [
 // Wiring
 //=========================================================
 
-server.post('/api/messages', connector.listen());
+//server.post('/api/messages', connector.listen());
