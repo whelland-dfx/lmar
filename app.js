@@ -9,7 +9,7 @@ var restify = require('restify');
 var builder = require('botbuilder');
 //var meaningOfLife = require('./meaningOfLife');
 
-var dbMongoose = require('./dbHelper');
+var dbMongoose = require('./includes/dbHelper');
 
 
 var mongoose = require('mongoose');
@@ -26,12 +26,12 @@ db.once('open', function() {
 });
 
 
-MongoClient.connect(url, function(err, db) {
-  assert.equal(null, err);
-  insertDocument(db, function() {
-      db.close();
-  });
-});
+//MongoClient.connect(url, function(err, db) {
+//  assert.equal(null, err);
+//  insertDocument(db, function() {
+//      db.close();
+//  });
+//});
 
 
 //=========================================================
