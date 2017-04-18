@@ -3,10 +3,23 @@
 // Setup All dependancies
 //=========================================================
 
-require('dotenv-extended').load();
+"use strict";
+var builder = require("botbuilder");
+var botbuilder_azure = require("botbuilder-azure");
+
+var useEmulator = (process.env.NODE_ENV == 'development');
+
+var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure.BotServiceConnector({
+    appId: process.env['MicrosoftAppId'],
+    appPassword: process.env['MicrosoftAppPassword'],
+    stateEndpoint: process.env['BotStateEndpoint'],
+    openIdMetadata: process.env['BotOpenIdMetadata']
+});
+
+var bot = new builder.UniversalBot(connector);
 
 //var restify = require('restify');
-var builder = require('botbuilder');
+//var builder = require('botbuilder');
 //var meaningOfLife = require('./meaningOfLife');
 
 //var dbMongoose = require('./includes/dbHelper');
@@ -532,4 +545,14 @@ var offersList = [
 // Wiring
 //=========================================================
 
-//server.post('/api/messages', connector.listen());
+if (useEmulator) {
+    var restify = require('restify');
+    var server = restify.createServer();
+    server.listen(3978, function() {
+        console.log('test bot endpont at http://localhost:3978/api/messages');
+    });
+    server.post('/api/messages', connector.listen());    
+} else {
+    module.exports = { default: connector.listen() }
+}
+
