@@ -16,61 +16,17 @@ var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure
     openIdMetadata: process.env['BotOpenIdMetadata']
 });
 
-//var bot = new builder.UniversalBot(connector);
-
-//var restify = require('restify');
-//var builder = require('botbuilder');
-//var meaningOfLife = require('./meaningOfLife');
-
-//var dbMongoose = require('./includes/dbHelper');
-
-
-//var mongoose = require('mongoose');
-
-//=========================================================
-// Setup our Mongoose connection
-//=========================================================
-//mongoose.connect('mongodb://localhost/db_hairhaus');
-
-//var db = mongoose.connection;
-//db.on('error', console.error.bind(console, 'connection error:'));
-//db.once('open', function() {
-  // we're connected!
-//});
-
-
-//MongoClient.connect(url, function(err, db) {
-//  assert.equal(null, err);
-//  insertDocument(db, function() {
-//      db.close();
-//  });
-//});
-
-
 //=========================================================
 // Setup Restify Server
 //=========================================================
-
-//var server = restify.createServer();
-//server.listen(process.env.port || process.env.PORT || 3978, 
-//  function () {
-//   console.log('%s listening to %s', server.name, server.url); 
-//});
   
 //=========================================================
 // Create Chat Connector
 //=========================================================
 
-//var connector = new builder.ChatConnector({
-//    appId: process.env.MICROSOFT_APP_ID,
-//    appPassword: process.env.MICROSOFT_APP_PASSWORD
-//});
-
 //=========================================================
 // Setup the bot object
 //=========================================================
-
-//var bot = new builder.UniversalBot(connector);
 
 //=========================================================
 // Bot Set the intent object
@@ -114,7 +70,8 @@ bot.dialog('/banner', [
 // Root Main Menu =========================================
 bot.dialog('/rootMenu', [
     function (session) {
-        builder.Prompts.choice(session, "How can we help you today?:", 'Our Services|See our product lines|Learn about Microblading|Make a Booking|Change a Booking|Check your upcomgin appointment|Quit');
+        //builder.Prompts.choice(session, "How can we help you today?:", 'Our Services|See our product lines|Learn about Microblading|Make a Booking|Change a Booking|Check your upcomgin appointment|Quit');
+        builder.CardAction.dialogAction('Our Services|See our product lines|Learn about Microblading|Make a Booking|Change a Booking|Check your upcomgin appointment|Quit');
     },
     function (session, results) {
         switch (results.response.index) {
