@@ -69,11 +69,26 @@ bot.dialog('/banner', [
 
 // Root Main Menu =========================================
 bot.dialog('/rootMenu', [
-    function (session) {
-        builder.Prompts.choice(session, "How can we help you today?:", 
-            'Our Services|See our product lines|Learn about Microblading|Make a Booking|Change a Booking|Check your upcomgin appointment|Quit',
-            {listStyle: builder.ListStyle.button});
+    function (session, args) {
+
+        var cards = getRootMenuCards();
+
+        // create reply with Carousel AttachmentLayout
+        var reply = new builder.Message(session)
+            .attachmentLayout(builder.AttachmentLayout.carousel)
+            .attachments(cards);
+
+        session.send(reply);
     },
+
+
+
+
+    //function (session) {
+    //    builder.Prompts.choice(session, "How can we help you today?:", 
+    //        'Our Services|See our product lines|Learn about Microblading|Make a Booking|Change a Booking|Check your upcomgin appointment|Quit',
+    //        {listStyle: builder.ListStyle.button});
+    //},
     function (session, results) {
         switch (results.response.index) {
             case 0:
@@ -432,6 +447,69 @@ bot.dialog('/done', [
 //=========================================================
 // Functions and Vars
 //=========================================================
+
+function getRootMenuCards(session) {
+    return [
+
+
+        new builder.HeroCard(session)
+            .title('EVERYTHING HAIR')
+            //.subtitle('Process events with a serverless code architecture')
+            .text('')
+            .images([
+                builder.CardImage.create(session, 'http://hairhaus.ca/images/jandancin.png')
+            ])
+            .buttons([
+                builder.CardAction.openUrl(session, 'http://hairhaus.ca/', 'Learn More')
+            ]),
+
+        new builder.HeroCard(session)
+            .title('COLOUR AND HIGHLIGHTS')
+            //.subtitle('Process events with a serverless code architecture')
+            .text('')
+            .images([
+                builder.CardImage.create(session, 'http://hairhaus.ca/images/promotion-goldwell.png')
+            ])
+            .buttons([
+                builder.CardAction.openUrl(session, 'http://hairhaus.ca/', 'Learn More')
+            ]),
+
+        new builder.HeroCard(session)
+            .title('SPA')
+            //.subtitle('Process events with a serverless code architecture')
+            .text('Layrite strives to represent a culture and brand that puts a modern style on a classic look. The masculine, vintage products they produce allow our customers to maintain this style while also adding their own originality to their overall image.')
+            .images([
+                builder.CardImage.create(session, 'http://hairhaus.ca/images/promo-layrite.png')
+            ])
+            .buttons([
+                builder.CardAction.openUrl(session, 'http://hairhaus.ca/', 'Learn More')
+            ]),
+
+        new builder.HeroCard(session)
+            .title('SKIN AND BEAUTY')
+            //.subtitle('Process events with a serverless code architecture')
+            .text('Jaydancin offers a line of products that are created from the heart and human spirit, inspired from real people who have serious illnesses such as Cancer to people who simply want pure, clean products without chemicals.')
+            .images([
+                builder.CardImage.create(session, 'http://hairhaus.ca/images/promotion1.png')
+            ])
+            .buttons([
+                builder.CardAction.openUrl(session, 'http://hairhaus.ca/', 'Learn More')
+            ]),
+
+        new builder.HeroCard(session)
+            .title('BEAUTY AND TINT')
+            //.subtitle('Process events with a serverless code architecture')
+            .text('Jaydancin offers a line of products that are created from the heart and human spirit, inspired from real people who have serious illnesses such as Cancer to people who simply want pure, clean products without chemicals.')
+            .images([
+                builder.CardImage.create(session, 'http://hairhaus.ca/images/promotion1.png')
+            ])
+            .buttons([
+                builder.CardAction.openUrl(session, 'http://hairhaus.ca/', 'Learn More')
+            ]),
+    ];
+}
+
+
 
 function getCardsAttachments(session) {
     return [
