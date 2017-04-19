@@ -70,7 +70,9 @@ bot.dialog('/banner', [
 // Root Main Menu =========================================
 bot.dialog('/rootMenu', [
     function (session) {
-        builder.Prompts.choice(session, "How can we help you today?:", 'Our Services|See our product lines|Learn about Microblading|Make a Booking|Change a Booking|Check your upcomgin appointment|Quit',{listStyle: builder.ListStyle.button});
+        builder.Prompts.choice(session, "How can we help you today?:", 
+            'Our Services|See our product lines|Learn about Microblading|Make a Booking|Change a Booking|Check your upcomgin appointment|Quit',
+            {listStyle: builder.ListStyle.button});
     },
     function (session, results) {
         switch (results.response.index) {
@@ -107,18 +109,9 @@ bot.dialog('/rootMenu', [
 bot.dialog('/rootMenu/chooseServiceDialog', [
     function (session, args) {
 
-        builder.Prompts.choice(session, "Hello... Welcome to Hairhaus!  How can we help you today?", [
-            "Cut and style", 
-            "Blow out and style",
-            "Formal Style",
-            "Colour",
-            "Highligts & Lowlights",
-            "Manicure & Pedicure",
-            "Facials & Massage",
-            "Beauty",
-            "Waxing",
-            "Tint"
-            ]);
+        builder.Prompts.choice(session, "Hello... Welcome to Hairhaus!  How can we help you today?", 
+            'Cut and style|Blow out and style|Formal Style|Colour|Highligts & Lowlights|Manicure & Pedicure|Facials & Massage|Beauty|Waxing|Tint',
+            {listStyle: builder.ListStyle.button});
     },
 
     function (session, results, args) {
@@ -356,11 +349,9 @@ bot.dialog('checkoutDialog', function (session) {
 bot.dialog('/checkYourBookingDialog', [
     function (session, args) {
 
-        builder.Prompts.choice(session, "checkYourBookingDialog", [
-            "This week",
-            "Next week",
-            "More times for you to choose from"
-            ]);
+        builder.Prompts.choice(session, "checkYourBookingDialog",
+            'This week|Next week|More times for you to choose from',
+            {listStyle: builder.ListStyle.button});
     },
     function (session, results) {
         switch (results.response.index) {
@@ -388,7 +379,9 @@ bot.dialog('bookingDialog', [
             session.userData.cart = [];
             session.send("At anytime you can say 'cancel appointment', 'view appointment', or 'make appointment'.")
         }
-        builder.Prompts.choice(session, "What would you like to do?", "Pizza|Drinks|Extras");
+        builder.Prompts.choice(session, "What would you like to do?", 
+            'Pizza|Drinks|Extras',
+            {listStyle: builder.ListStyle.button});
     },
     function (session, results) {
         session.beginDialog('add' + results.response.entity);
