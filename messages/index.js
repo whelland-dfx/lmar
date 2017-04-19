@@ -70,8 +70,7 @@ bot.dialog('/banner', [
 // Root Main Menu =========================================
 bot.dialog('/rootMenu', [
     function (session) {
-        //builder.Prompts.choice(session, "How can we help you today?:", 'Our Services|See our product lines|Learn about Microblading|Make a Booking|Change a Booking|Check your upcomgin appointment|Quit');
-        builder.CardAction.dialogAction('Our Services|See our product lines|Learn about Microblading|Make a Booking|Change a Booking|Check your upcomgin appointment|Quit');
+        builder.Prompts.choice(session, "How can we help you today?:", 'Our Services|See our product lines|Learn about Microblading|Make a Booking|Change a Booking|Check your upcomgin appointment|Quit');
     },
     function (session, results) {
         switch (results.response.index) {
