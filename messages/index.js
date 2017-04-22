@@ -36,8 +36,30 @@ server.listen(process.env.PORT, () => {
     console.log(`${server.name} listening to ${server.url}`);
 });
 
+
+
+
+
+
+
+
 //=========================================================
-// Conversatoin Actions
+// Conversation Structure - MAIN
+//=========================================================
+
+var bot = new builder.UniversalBot(connector, [
+    function (session) {
+        session.beginDialog('/banner');
+        session.beginDialog('/rootMenu');
+    },
+    function (session, results) {
+        session.endConversation("Goodbye until next time...");
+    }
+
+]);
+
+//=========================================================
+// Conversation Actions
 //=========================================================
 
 bot.dialog('hair', require('./hair'))
