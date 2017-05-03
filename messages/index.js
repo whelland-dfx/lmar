@@ -7,7 +7,6 @@
 
 const restify = require('restify');
 require('dotenv').config();
-const bot = require('./bot.js');
 var builder = require('botbuilder');
 var botbuilder_azure = require('botbuilder-azure');
 
