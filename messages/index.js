@@ -62,6 +62,24 @@ var bot = new builder.UniversalBot(connector, [
 
 ]);
 
+
+
+// Banner =================================================
+bot.dialog('/banner', [
+    function (session) {
+        // Send a greeting and show help.
+        var card = new builder.HeroCard(session)
+            .title("Hello welcome to Hairhaus - London Ontario")
+            .images([
+                 builder.CardImage.create(session, "http://hairhaus.ca/images/hair-haus-logo-white.jpg")
+            ]);
+        var msg = new builder.Message(session).attachments([card]);
+        session.send(msg);
+    }
+]);
+
+
+
 //=========================================================
 // Conversation Actions
 //=========================================================
