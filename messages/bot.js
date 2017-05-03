@@ -3,18 +3,10 @@
 //=========================================================
 
 'use strict';
+
 const builder = require('botbuilder');
+const botbuilder_azure = require('botbuilder-azure');
 
-const connector = new builder.ChatConnector({
-    appId: process.env.MICROSOFT_APP_ID,
-    appPassword: process.env.MICROSOFT_APP_PASSWORD
-});
-
-var DialogLabels = {
-    Menu: 'rootMenu',
-    Flights: 'Flights',
-    Support: 'Support'
-};
 
 //=========================================================
 // Conversation - Holds collection of dialogs for - 

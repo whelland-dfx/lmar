@@ -1,24 +1,46 @@
 
-/**
- * Wrapper function to simplify calling our progress dialog.
- * @param {*} session Current session object.  
- * @param {*} options Options to control messages sent by the progress dialog. 
- *      Values:
- *          * text:         (Required) progress text to send.
- *          * speak:        (Optional) ssml to send with each progress message.
- *          * delay:        (Optional) delay (in ms) before progress is sent.
- *          * initialText:  (Optional) initial progress text.
- *          * initialSpeak: (Optional) initial progress ssml.
- *          * initialDelay: (Optional) delay before initial progress is sent.
- * @param {*} asyncFn Async function to call. Will be passed a callback with a 
- *      signature of (response: any) => void.  
- */
-function progress(session, options, asyncFn) {
-    session.beginDialog('progressDialog', {
-        asyncFn: asyncFn,
-        options: options
-    })
-}
+
+//=========================================================
+// Helper Utils - Progress - Under dev - not complete
+//=========================================================
+
+
+
+module.exports = [
+
+    /**
+     * Wrapper function to simplify calling our progress dialog.
+     * @param {*} session Current session object.  
+     * @param {*} options Options to control messages sent by the progress dialog. 
+     *      Values:
+     *          * text:         (Required) progress text to send.
+     *          * speak:        (Optional) ssml to send with each progress message.
+     *          * delay:        (Optional) delay (in ms) before progress is sent.
+     *          * initialText:  (Optional) initial progress text.
+     *          * initialSpeak: (Optional) initial progress ssml.
+     *          * initialDelay: (Optional) delay before initial progress is sent.
+     * @param {*} asyncFn Async function to call. Will be passed a callback with a 
+     *      signature of (response: any) => void.  
+     */
+    function progress(session, options, asyncFn) {
+        session.beginDialog('progressDialog', {
+            asyncFn: asyncFn,
+            options: options
+        })
+    }
+
+
+
+
+
+
+
+
+];
+
+
+
+
 
 bot.dialog('progressDialog', function (session, args) {
     var asyncFn = args.asyncFn;

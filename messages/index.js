@@ -1,34 +1,29 @@
 
 //=========================================================
-// Setup All dependancies
+// Setup All requires, vars and constants
 //=========================================================
 
 'use strict';
 
 const restify = require('restify');
 require('dotenv').config();
+const bot = require('./bot.js');
+var builder = require('botbuilder');
+var botbuilder_azure = require('botbuilder-azure');
 
-"use strict";
-var builder = require("botbuilder");
-var botbuilder_azure = require("botbuilder-azure");
+
+//=========================================================
+// Plumbing
+//=========================================================
 
 var useEmulator = (process.env.NODE_ENV == 'development');
 
-var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure.BotServiceConnector({
-    appId: process.env['MicrosoftAppId'],
+const connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure.BotServiceConnector({
+    appId: process.env['MICROSOFT_APP_ID'],
     appPassword: process.env['MicrosoftAppPassword'],
     stateEndpoint: process.env['BotStateEndpoint'],
     openIdMetadata: process.env['BotOpenIdMetadata']
 });
-
-
-var DialogLabels = {
-    Hair: 'Hair',
-    Colour: 'Colour',
-    Spa: 'Spa',
-    Skin: 'Skin',
-    Tint: 'Tint'
-};
 
 const server = restify.createServer();
 server.post('/api/messages', bot.connector('*').listen());
@@ -37,8 +32,17 @@ server.listen(process.env.PORT, () => {
 });
 
 
+//=========================================================
+// Conversation Structure - Dialog Labels
+//=========================================================
 
-
+var DialogLabels = {
+    Hair: 'Hair',
+    Colour: 'Colour',
+    Spa: 'Spa',
+    Skin: 'Skin',
+    Tint: 'Tint'
+};
 
 
 
