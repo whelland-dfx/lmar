@@ -14,6 +14,12 @@ var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure
 });
 
 
+const server = restify.createServer();
+server.post('/api/messages', bot.connector('*').listen());
+server.listen(process.env.PORT, () => {
+    console.log(`${server.name} listening to ${server.url}`);
+});
+
 
 
 
@@ -40,9 +46,3 @@ var bot = new builder.UniversalBot(connector, [
 ]);
 
 
-
-const server = restify.createServer();
-server.post('/api/messages', bot.connector('*').listen());
-server.listen(process.env.PORT, () => {
-    console.log(`${server.name} listening to ${server.url}`);
-});
