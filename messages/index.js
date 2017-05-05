@@ -594,5 +594,3 @@ var offersList = [
     "10% off product purchased at your appointment"
 ];
 
-/
-
