@@ -4,17 +4,12 @@
 // Setup All dependancies
 //=========================================================
 
-'use strict';
+//'use strict';
 
-const restify = require('restify');
-require('dotenv').config();
+
+//require('dotenv').config();
 //const bot = require('./bot.js');
 
-const server = restify.createServer();
-server.post('/api/messages', bot.connector('*').listen());
-server.listen(process.env.PORT, () => {
-    console.log(`${server.name} listening to ${server.url}`);
-});
 
 
 
@@ -41,10 +36,18 @@ var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure
 //=========================================================
 // Setup Restify Server
 //=========================================================
-  
+
+const restify = require('restify');
+
 //=========================================================
 // Create Chat Connector
 //=========================================================
+
+const server = restify.createServer();
+server.post('/api/messages', bot.connector('*').listen());
+server.listen(process.env.PORT, () => {
+    console.log(`${server.name} listening to ${server.url}`);
+});
 
 //=========================================================
 // Setup the bot object
