@@ -3,7 +3,7 @@
 // Setup All requires, vars and constants
 //=========================================================
 
-'use strict';
+//'use strict';
 
 const restify = require('restify');
 require('dotenv').config();
@@ -17,7 +17,7 @@ var botbuilder_azure = require('botbuilder-azure');
 
 var useEmulator = (process.env.NODE_ENV == 'development');
 
-var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure.BotServiceConnector({
+const connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure.BotServiceConnector({
     appId: process.env['MICROSOFT_APP_ID'],
     appPassword: process.env['MicrosoftAppPassword'],
     stateEndpoint: process.env['BotStateEndpoint'],
