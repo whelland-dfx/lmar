@@ -1,6 +1,8 @@
 
 var builder = require("botbuilder");
 var botbuilder_azure = require("botbuilder-azure");
+const restify = require('restify');
+
 
 var useEmulator = (process.env.NODE_ENV == 'development');
 
@@ -10,6 +12,8 @@ var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure
     stateEndpoint: process.env['BotStateEndpoint'],
     openIdMetadata: process.env['BotOpenIdMetadata']
 });
+
+
 
 
 
@@ -34,3 +38,11 @@ var bot = new builder.UniversalBot(connector, [
                      " years and use " + session.userData.language + ".");
     }
 ]);
+
+
+
+const server = restify.createServer();
+server.post('/api/messages', bot.connector('*').listen());
+server.listen(process.env.PORT, () => {
+    console.log(`${server.name} listening to ${server.url}`);
+});
