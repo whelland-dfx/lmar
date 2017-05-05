@@ -4,23 +4,8 @@
 // Setup All dependancies
 //=========================================================
 
-//'use strict';
-
-
-//require('dotenv').config();
-//const bot = require('./bot.js');
-
-
-
-
-
-
-
-//=========================================================
-// Setup All dependancies
-//=========================================================
-
 "use strict";
+require('dotenv').config();
 var builder = require("botbuilder");
 var botbuilder_azure = require("botbuilder-azure");
 
