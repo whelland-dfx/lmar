@@ -1,43 +1,136 @@
+/*-----------------------------------------------------------------------------
+An image caption bot for the Microsoft Bot Framework. 
+-----------------------------------------------------------------------------*/
 
-var builder = require("botbuilder");
+// This loads the environment variables from the .env file
+require('dotenv-extended').load();
 
-// Setup bot and root message handler
-var connector = new builder.ConsoleConnector().listen();
+var builder = require('botbuilder'),
+    needle = require('needle'),
+    restify = require('restify'),
+    url = require('url'),
+    validUrl = require('valid-url'),
+    captionService = require('./caption-service');
+
+//=========================================================
+// Bot Setup
+//=========================================================
+
+// Setup Restify Server
+var server = restify.createServer();
+server.listen(process.env.port || process.env.PORT || 3978, function () {
+    console.log('%s listening to %s', server.name, server.url);
+});
+
+// Create chat bot
+var connector = new builder.ChatConnector({
+    appId: process.env.MICROSOFT_APP_ID,
+    appPassword: process.env.MICROSOFT_APP_PASSWORD
+});
+
+server.post('/api/messages', connector.listen());
+
+// Gets the caption by checking the type of the image (stream vs URL) and calling the appropriate caption service method.
 var bot = new builder.UniversalBot(connector, function (session) {
-    session.send("%s, I heard: %s", session.userData.name, session.message.text);
-    session.send("Say 'help' or something else...");
-});
-
-// Add first run dialog
-bot.dialog('firstRun', [
-    function (session) {
-        // Update versio number and start Prompts
-        // - The version number needs to be updated first to prevent re-triggering 
-        //   the dialog. 
-        session.userData.version = 1.0; 
-        builder.Prompts.text(session, "Hello... What's your name?");
-    },
-    function (session, results) {
-        // We'll save the users name and send them an initial greeting. All 
-        // future messages from the user will be routed to the root dialog.
-        session.userData.name = results.response;
-        session.endDialog("Hi %s, say something to me and I'll echo it back.", session.userData.name); 
-    }
-]).triggerAction({
-    onFindAction: function (context, callback) {
-        // Trigger dialog if the users version field is less than 1.0
-        // - When triggered we return a score of 1.1 to ensure the dialog is always triggered.
-        var ver = context.userData.version || 0;
-        var score = ver < 1.0 ? 1.1: 0.0;
-        callback(null, score);
-    },
-    onInterrupted: function (session, dialogId, dialogArgs, next) {
-        // Prevent dialog from being interrupted.
-        session.send("Sorry... We need some information from you first.");
+    if (hasImageAttachment(session)) {
+        var stream = getImageStreamFromMessage(session.message);
+        captionService
+            .getCaptionFromStream(stream)
+            .then(function (caption) { handleSuccessResponse(session, caption); })
+            .catch(function (error) { handleErrorResponse(session, error); });
+    } else {
+        var imageUrl = parseAnchorTag(session.message.text) || (validUrl.isUri(session.message.text) ? session.message.text : null);
+        if (imageUrl) {
+            captionService
+                .getCaptionFromUrl(imageUrl)
+                .then(function (caption) { handleSuccessResponse(session, caption); })
+                .catch(function (error) { handleErrorResponse(session, error); });
+        } else {
+            session.send('Did you upload an image? I\'m more of a visual person. Try sending me an image or an image URL');
+        }
     }
 });
 
-// Add help dialog
-bot.dialog('help', function (session) {
-    session.send("I'm a simple echo bot.");
-}).triggerAction({ matches: /^help/i });
+//=========================================================
+// Bots Events
+//=========================================================
+
+//Sends greeting message when the bot is first added to a conversation
+bot.on('conversationUpdate', function (message) {
+    if (message.membersAdded) {
+        message.membersAdded.forEach(function (identity) {
+            if (identity.id === message.address.bot.id) {
+                var reply = new builder.Message()
+                    .address(message.address)
+                    .text('Hi! I am ImageCaption Bot. I can understand the content of any image and try to describe it as well as any human. Try sending me an image or an image URL.');
+                bot.send(reply);
+            }
+        });
+    }
+});
+
+
+//=========================================================
+// Utilities
+//=========================================================
+function hasImageAttachment(session) {
+    return session.message.attachments.length > 0 &&
+        session.message.attachments[0].contentType.indexOf('image') !== -1;
+}
+
+function getImageStreamFromMessage(message) {
+    var headers = {};
+    var attachment = message.attachments[0];
+    if (checkRequiresToken(message)) {
+        // The Skype attachment URLs are secured by JwtToken,
+        // you should set the JwtToken of your bot as the authorization header for the GET request your bot initiates to fetch the image.
+        // https://github.com/Microsoft/BotBuilder/issues/662
+        connector.getAccessToken(function (error, token) {
+            var tok = token;
+            headers['Authorization'] = 'Bearer ' + token;
+            headers['Content-Type'] = 'application/octet-stream';
+
+            return needle.get(attachment.contentUrl, { headers: headers });
+        });
+    }
+
+    headers['Content-Type'] = attachment.contentType;
+    return needle.get(attachment.contentUrl, { headers: headers });
+}
+
+function checkRequiresToken(message) {
+    return message.source === 'skype' || message.source === 'msteams';
+}
+
+/**
+ * Gets the href value in an anchor element.
+ * Skype transforms raw urls to html. Here we extract the href value from the url
+ * @param {string} input Anchor Tag
+ * @return {string} Url matched or null
+ */
+function parseAnchorTag(input) {
+    var match = input.match('^<a href=\"([^\"]*)\">[^<]*</a>$');
+    if (match && match[1]) {
+        return match[1];
+    }
+
+    return null;
+}
+
+//=========================================================
+// Response Handling
+//=========================================================
+function handleSuccessResponse(session, caption) {
+    if (caption) {
+        session.send('I think it\'s ' + caption);
+    }
+    else {
+        session.send('Couldn\'t find a caption for this one');
+    }
+
+}
+
+function handleErrorResponse(session, error) {
+    session.send('Oops! Something went wrong. Try again later.');
+    console.error(error);
+}
