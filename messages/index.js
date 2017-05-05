@@ -14,7 +14,7 @@ var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure
 
 
 // Setup bot and root waterfall
-var connector = new builder.ConsoleConnector().listen();
+//var connector = new builder.ConsoleConnector().listen();
 var bot = new builder.UniversalBot(connector, [
     function (session) {
         builder.Prompts.text(session, "Hello... What's your name?");
