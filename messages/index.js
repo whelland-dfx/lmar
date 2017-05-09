@@ -6,7 +6,6 @@ const bot = require('./bot.js');
 require('dotenv-extended').load();
 
 const server = restify.createServer();
-server.post('/api/messages', bot.connector('*').listen());
 
 /*
 server.listen(process.env.PORT, () => {
@@ -18,3 +17,5 @@ server.listen(process.env.PORT, () => {
 server.listen(process.env.port || process.env.PORT || 3978, function () {
     console.log('%s listening to %s', server.name, server.url);
 });
+
+server.post('/api/messages', bot.connector('*').listen());
