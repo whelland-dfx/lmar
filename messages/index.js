@@ -31,7 +31,7 @@ var bot = new builder.UniversalBot(connector, [
         builder.Prompts.choice(
             session,
             'Are you looking for a flight or a hotel?',
-            [DialogLabels.Flights, DialogLabels.Hotels],
+            [DialogLabels.Nails, DialogLabels.Hair],
             {
                 maxRetries: 3,
                 retryPrompt: 'Not a valid option'
@@ -53,9 +53,9 @@ var bot = new builder.UniversalBot(connector, [
         // continue on proper dialog
         var selection = result.response.entity;
         switch (selection) {
-            case DialogLabels.Flights:
+            case DialogLabels.Nails:
                 return session.beginDialog('flights');
-            case DialogLabels.Hotels:
+            case DialogLabels.Hair:
                 return session.beginDialog('hotels');
         }
     }
