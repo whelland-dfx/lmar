@@ -18,9 +18,11 @@ var connector = new builder.ChatConnector({
 server.post('/api/messages', connector.listen());
 
 var DialogLabels = {
-    Hotels: 'Hotels',
-    Flights: 'Flights',
-    Support: 'Support'
+    Nails: 'Nails',
+    Hair: 'Hair',
+    Colour: 'Colour',
+    Style: 'Style',
+    Help: 'Help'
 };
 
 var bot = new builder.UniversalBot(connector, [
@@ -59,9 +61,23 @@ var bot = new builder.UniversalBot(connector, [
     }
 ]);
 
-bot.dialog('flights', require('./flights'));
-bot.dialog('hotels', require('./hotels'));
-bot.dialog('support', require('./support'))
+bot.dialog('nail', require('./nail'))
+    .triggerAction({
+        matches: [/nail/i, /manicure/i, /pedicure/i, /pedi/i, /mani/i]
+    });
+bot.dialog('hair', require('./hair'))
+    .triggerAction({
+        matches: [/hair/i, /cut/i, /haircut/i]
+    });
+bot.dialog('colour', require('./colour'))
+    .triggerAction({
+        matches: [/help/i, /support/i, /problem/i]
+    });
+bot.dialog('style', require('./style'))
+    .triggerAction({
+        matches: [/style/i, /blowdry/i, /formals/i]
+    });
+bot.dialog('help', require('./help'))
     .triggerAction({
         matches: [/help/i, /support/i, /problem/i]
     });
