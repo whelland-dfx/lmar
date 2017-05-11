@@ -1,5 +1,5 @@
 {
-  "name": "hairhaus",
+  "name": "lmar",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/whelland/hairhaus.git"
+    "url": "git+https://github.com/whelland/lmar.git"
   },
   "author": "Botly Bot builders - A Hyparec company",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/whelland/hairhaus/issues"
+    "url": "https://github.com/whelland/lmar/issues"
   },
-  "homepage": "https://github.com/whelland/hairhaus#readme",
+  "homepage": "https://github.com/whelland/lmar#readme",
   "dependencies": {
     "botbuilder": "^3.7.0",
     "dotenv-extended": "^1.0.4",
